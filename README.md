@@ -14,6 +14,11 @@ This PowerShell module provides a set of functions to manage Windows Subsystem f
    WSLForward -Command add -ListenPort 3000 -ConnectPort 3000 -NoFirewallRule
    ```
 
+1. **Add a WSL Port Forward without adding a firewall rule**
+   ```powershell
+   WSLForward -Command add -ListenPort 3000 -ConnectPort 3000 -NoFirewallRule
+   ```
+
 2. **Remove a WSL Port Forward**
    ```powershell
    WSLForward -Command remove -ListenPort 3000
