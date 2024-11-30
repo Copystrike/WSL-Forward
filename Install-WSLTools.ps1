@@ -1,5 +1,3 @@
-# PowerShell script to install WSLTools Module
-
 param (
     [string]$ModuleDirectory = "$HOME\PowerShell\Modules\WSLTools",
     [string]$GitHubUrl = "https://raw.githubusercontent.com/Copystrike/WSL-Forward/refs/heads/master/WSLTools.psm1"
@@ -60,9 +58,11 @@ if (-Not (Test-Path $ProfilePath)) {
     New-Item -ItemType File -Path $ProfilePath -Force
 }
 
-# Use a simpler check without regex
+# Use a simpler check to avoid regex issues
 $ImportCommand = "if (Test-Path '$DestinationPath') { Import-Module '$DestinationPath' }"
-if (-Not (Get-Content $ProfilePath | Select-String -Pattern [regex]::Escape($ImportCommand))) {
+$ProfileContent = Get-Content $ProfilePath
+
+if ($ProfileContent -notcontains $ImportCommand) {
     Add-Content -Path $ProfilePath -Value $ImportCommand
     Write-Output "Added module import command to PowerShell profile."
 } else {
