@@ -26,13 +26,19 @@ if (Test-Path $DestinationPath) {
     exit 1
 }
 
-# Import the module
-Write-Output "Importing the module..."
-Import-Module $DestinationPath -Force
+# Import the module with detailed debugging
+Write-Output "Importing the module with debugging..."
+try {
+    Import-Module -Name $DestinationPath -Force -Verbose -ErrorAction Stop
+    Write-Output "Module imported successfully."
+} catch {
+    Write-Error "Failed to import the module. Error details: $_"
+    exit 1
+}
 
 # Verify module installation
 if (Get-Module -Name WSLTools -ListAvailable) {
-    Write-Output "Module imported successfully. Adding to profile..."
+    Write-Output "Module verified successfully. Adding to profile..."
     
     # Add to PowerShell profile
     $ProfilePath = $PROFILE
@@ -51,6 +57,6 @@ if (Get-Module -Name WSLTools -ListAvailable) {
 
     Write-Output "WSLTools module installed successfully."
 } else {
-    Write-Error "Failed to import the module."
+    Write-Error "Module verification failed after import."
     exit 1
 }
