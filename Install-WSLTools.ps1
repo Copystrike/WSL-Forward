@@ -36,27 +36,36 @@ try {
     exit 1
 }
 
-# Verify module installation
-if (Get-Module -Name WSLTools -ListAvailable) {
-    Write-Output "Module verified successfully. Adding to profile..."
-    
-    # Add to PowerShell profile
-    $ProfilePath = $PROFILE
-    if (-Not (Test-Path $ProfilePath)) {
-        Write-Output "Creating PowerShell profile at $ProfilePath..."
-        New-Item -ItemType File -Path $ProfilePath -Force -Verbose
-    }
-
-    $ImportCommand = "if (Test-Path '$DestinationPath') { Import-Module '$DestinationPath' }"
-    if (-Not (Get-Content $ProfilePath | Select-String -Pattern $ImportCommand)) {
-        Add-Content -Path $ProfilePath -Value $ImportCommand
-        Write-Output "Added module import command to PowerShell profile."
-    } else {
-        Write-Output "Module import command already exists in PowerShell profile."
-    }
-
-    Write-Output "WSLTools module installed successfully."
+# Verify module installation in current session
+Write-Output "Verifying module availability..."
+if (Get-Module -Name WSLTools) {
+    Write-Output "Module is available in the current session."
 } else {
-    Write-Error "Module verification failed after import."
-    exit 1
+    Write-Output "Module not available in the session. Checking all available modules..."
+    $AvailableModules = Get-Module -ListAvailable
+    Write-Output "Available modules: $($AvailableModules | Out-String)"
+    if ($AvailableModules -match 'WSLTools') {
+        Write-Output "WSLTools found in available modules."
+    } else {
+        Write-Error "WSLTools module could not be found."
+        exit 1
+    }
 }
+
+# Add to PowerShell profile
+Write-Output "Adding module to PowerShell profile..."
+$ProfilePath = $PROFILE
+if (-Not (Test-Path $ProfilePath)) {
+    Write-Output "Creating PowerShell profile at $ProfilePath..."
+    New-Item -ItemType File -Path $ProfilePath -Force -Verbose
+}
+
+$ImportCommand = "if (Test-Path '$DestinationPath') { Import-Module '$DestinationPath' }"
+if (-Not (Get-Content $ProfilePath | Select-String -Pattern $ImportCommand)) {
+    Add-Content -Path $ProfilePath -Value $ImportCommand
+    Write-Output "Added module import command to PowerShell profile."
+} else {
+    Write-Output "Module import command already exists in PowerShell profile."
+}
+
+Write-Output "WSLTools module installed successfully."
