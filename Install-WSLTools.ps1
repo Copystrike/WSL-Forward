@@ -36,8 +36,8 @@ try {
     exit 1
 }
 
-# Verify module installation in current session
-Write-Output "Verifying module availability..."
+# Verify module installation in the current session
+Write-Output "Verifying module availability in the current session..."
 if (Get-Module -Name WSLTools) {
     Write-Output "Module is available in the current session."
 } else {
@@ -52,7 +52,7 @@ if (Get-Module -Name WSLTools) {
     }
 }
 
-# Add to PowerShell profile
+# Add to PowerShell profile for future sessions
 Write-Output "Adding module to PowerShell profile..."
 $ProfilePath = $PROFILE
 if (-Not (Test-Path $ProfilePath)) {
