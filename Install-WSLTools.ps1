@@ -60,8 +60,11 @@ if (-Not (Test-Path $ProfilePath)) {
     New-Item -ItemType File -Path $ProfilePath -Force -Verbose
 }
 
-$ImportCommand = "if (Test-Path '$DestinationPath') { Import-Module '$DestinationPath' }"
-if (-Not (Get-Content $ProfilePath | Select-String -Pattern $ImportCommand)) {
+# Escape the backslashes in the path for the regex pattern
+$EscapedDestinationPath = $DestinationPath -replace '\\', '\\\\'
+
+$ImportCommand = "if (Test-Path '$EscapedDestinationPath') { Import-Module '$EscapedDestinationPath' }"
+if (-Not (Get-Content $ProfilePath | Select-String -Pattern [regex]::Escape($ImportCommand))) {
     Add-Content -Path $ProfilePath -Value $ImportCommand
     Write-Output "Added module import command to PowerShell profile."
 } else {
