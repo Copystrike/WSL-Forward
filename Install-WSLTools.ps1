@@ -10,7 +10,7 @@ Write-Output "Starting WSLTools module installation..."
 # Create the module directory
 if (-Not (Test-Path $ModuleDirectory)) {
     Write-Output "Creating module directory at $ModuleDirectory..."
-    New-Item -ItemType Directory -Path $ModuleDirectory -Force -Verbose
+    New-Item -ItemType Directory -Path $ModuleDirectory -Force
 }
 
 # Download the WSLTools.psm1 file
@@ -26,10 +26,10 @@ if (Test-Path $DestinationPath) {
     exit 1
 }
 
-# Import the module with detailed debugging
-Write-Output "Importing the module with debugging..."
+# Import the module without verbose/debugging output
+Write-Output "Importing the module..."
 try {
-    Import-Module -Name $DestinationPath -Force -Verbose -ErrorAction Stop
+    Import-Module -Name $DestinationPath -Force -ErrorAction Stop
     Write-Output "Module imported successfully."
 } catch {
     Write-Error "Failed to import the module. Error details: $_"
@@ -57,19 +57,16 @@ Write-Output "Adding module to PowerShell profile..."
 $ProfilePath = $PROFILE
 if (-Not (Test-Path $ProfilePath)) {
     Write-Output "Creating PowerShell profile at $ProfilePath..."
-    New-Item -ItemType File -Path $ProfilePath -Force -Verbose
+    New-Item -ItemType File -Path $ProfilePath -Force
 }
 
-# Import command to add to profile
+# Use a simpler check without regex
 $ImportCommand = "if (Test-Path '$DestinationPath') { Import-Module '$DestinationPath' }"
-
-# Read the profile file and check if the import command exists
-$ProfileContent = Get-Content $ProfilePath
-if ($ProfileContent -contains $ImportCommand) {
-    Write-Output "Module import command already exists in PowerShell profile."
-} else {
+if (-Not (Get-Content $ProfilePath | Select-String -Pattern [regex]::Escape($ImportCommand))) {
     Add-Content -Path $ProfilePath -Value $ImportCommand
     Write-Output "Added module import command to PowerShell profile."
+} else {
+    Write-Output "Module import command already exists in PowerShell profile."
 }
 
 Write-Output "WSLTools module installed successfully."
