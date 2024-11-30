@@ -60,13 +60,16 @@ if (-Not (Test-Path $ProfilePath)) {
     New-Item -ItemType File -Path $ProfilePath -Force -Verbose
 }
 
-# Use a simpler check without regex
+# Import command to add to profile
 $ImportCommand = "if (Test-Path '$DestinationPath') { Import-Module '$DestinationPath' }"
-if (-Not (Get-Content $ProfilePath | Select-String -Pattern [regex]::Escape($ImportCommand))) {
+
+# Read the profile file and check if the import command exists
+$ProfileContent = Get-Content $ProfilePath
+if ($ProfileContent -contains $ImportCommand) {
+    Write-Output "Module import command already exists in PowerShell profile."
+} else {
     Add-Content -Path $ProfilePath -Value $ImportCommand
     Write-Output "Added module import command to PowerShell profile."
-} else {
-    Write-Output "Module import command already exists in PowerShell profile."
 }
 
 Write-Output "WSLTools module installed successfully."
