@@ -1,2 +1,94 @@
 # WSL-Forward
-Commands to manage port forwarding and firewall rules for WSL (Windows Subsystem for Linux).
+
+This PowerShell module provides a set of functions to manage Windows Subsystem for Linux (WSL) port forwarding and firewall rules. The module includes functions to add, remove, and list port forwards, as well as to add and remove firewall rules.
+
+## Example Use Case
+
+1. If you're developing a web app on WSL and want to test it on your phone, you can forward the web server port (e.g., 3000) from WSL to your host, then access the app via the host machine’s IP address.
+1. If you want to expose a shell or command-line interface running on WSL to external devices via port 21, you can forward this port for access.
+
+## Usage Examples
+
+1. **Add a WSL Port Forward**
+   ```powershell
+   WSLForward -Command add -ListenPort 3000 -ConnectPort 3000 -NoFirewallRule
+   ```
+
+2. **Remove a WSL Port Forward**
+   ```powershell
+   WSLForward -Command remove -ListenPort 3000
+   ```
+
+3. **List All WSL Port Forwards**
+   ```powershell
+   WSLForward -Command list
+   ```
+## Installation
+
+To install this module on your system, follow these steps:
+
+1. **Download the Module**
+   - Save the `WSLTools.psm1` file to a directory on your system, for example: `C:/Users/yourusername/PowerShell/Modules/WSLTools/`.
+
+2. **Import the Module**
+   - Open PowerShell and run the following command to import the module:
+     ```powershell
+     Import-Module 'C:/Users/yourusername/PowerShell/Modules/WSLTools/WSLTools.psm1'
+     ```
+
+3. **Verify the Module**
+   - To verify that the module has been imported correctly, run:
+     ```powershell
+     Get-Module -Name WSLTools -ListAvailable
+     ```
+
+4. **Use the Functions**
+   - You can now use the functions provided by the module as described in the usage examples above.
+
+By following these steps, you will have the `WSLTools` module installed and ready to use on your system.
+
+
+### Add to PowerShell Profile
+
+To automatically import the module in every PowerShell session, add the following line to your PowerShell profile script (`$PROFILE`):
+
+```powershell
+if (Test-Path 'C:/Users/yourusername/PowerShell/Modules/WSLTools/WSLTools.psm1') {
+    Import-Module 'C:/Users/yourusername/PowerShell/Modules/WSLTools/WSLTools.psm1'
+}
+```
+
+## Commands
+
+1. **Add-WSLForward**
+   - Adds a port forward from the host to the WSL instance.
+   - Parameters:
+     - `ListenPort` (int): The port number on the host to listen on.
+     - `ConnectPort` (int, optional): The port number on the WSL instance to connect to. Defaults to the same as `ListenPort`.
+     - `NoFirewallRule` (switch): If specified, will not add a firewall rule for the `ListenPort`.
+
+1. **Remove-WSLForward**
+   - Removes a port forward from the host to the WSL instance.
+   - Parameters:
+     - `ListenPort` (int): The port number on the host to stop listening on.
+
+1. **List-WSLForward**
+   - Lists all current port forwards from the host to the WSL instance.
+
+1. **WSLForward**
+   - Main function to manage WSL port forwards.
+   - Parameters:
+     - `Command` (string): The command to execute (`add`, `remove`, `list`).
+    
+## Notes
+
+- The module automatically requests elevated privileges when necessary.
+- The `Start-Elevated` function ensures that the elevated process does not close immediately after execution, allowing you to see the output and any potential errors.
+- The `Read-Host 'Press Enter to exit...'` command is used to pause the elevated PowerShell window, so you can review the output before it closes.
+
+## Exported Functions
+
+- `WSLForward`
+- `Add-WSLForward`
+- `Remove-WSLForward`
+- `List-WSLForward`
