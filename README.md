@@ -2,6 +2,14 @@
 
 This PowerShell module provides a set of functions to manage Windows Subsystem for Linux (WSL) port forwarding and firewall rules. The module includes functions to add, remove, and list port forwards, as well as to add and remove firewall rules.
 
+## Table of Contents
+- [Example Use Case](#example-use-case)
+- [Usage Examples](#usage-examples)
+- [Installation](#installation)
+- [Commands](#commands)
+- [Notes](#notes)
+- [Exported Functions](#exported-functions)
+
 ## Example Use Case
 
 1. If you're developing a web app on WSL and want to test it on your phone, you can forward the web server port (e.g., 3000) from WSL to your host, then access the app via the host machine’s IP address.
