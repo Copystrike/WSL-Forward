@@ -72,7 +72,7 @@ function Add-WSLForward {
 
     # Fetch the WSL IP dynamically
     Write-Host "Fetching WSL IP address..."
-    $wslIp = wsl hostname -I | ForEach-Object { $_.Trim() }
+    $wslIp = ((wsl hostname -I).Trim() -split '\s+')[0]
 
     # Construct and execute the netsh command
     $command = "netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=$ListenPort connectaddress=$wslIp connectport=$ConnectPort"
